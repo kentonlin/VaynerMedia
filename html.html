@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> VaynerMedia LLC </title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+  </head>
+
+  <body>
+    <div class="table user1">
+      <div class="tableHeading user1name">
+        <h2></h2>
+      </div>
+      <div class="tableBody" id="user1table">
+        <div class="tableRow">
+          <div class="tableHead">
+            <strong> Album Id </strong>
+          </div>
+          <div class="tableHead">
+            <strong> Album Title </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table user2">
+      <div class="tableHeading user2name">
+        <h2></h2>
+      </div>
+      <div class="tableBody" id="user2table">
+        <div class="tableRow">
+          <div class="tableHead">
+            <strong> Album Id </strong>
+          </div>
+          <div class="tableHead">
+            <strong> Album Title </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+      var root = 'http://jsonplaceholder.typicode.com';
+      var user1;
+      var user2;
+      var user1albums;
+      var user2albums;
+
+      $.when(
+        // AJAX calls that will wait for all to complete before rendering the return of this promise
+        // API call for user id 2 data
+        $.get(root + '/users?id=2', function(user2data){
+          user2 = user2data;
+        }),
+        // API call for user id 1 data
+        $.get(root + '/users?id=1', function(user1data){
+          user1 = user1data;
+        }),
+        // API call for user id 2 albums
+        $.get(root + '/albums?userId=2', function(user2music){
+          user2albums = user2music;
+        }),
+        // API call for user id 1 albums
+        $.get(root + '/albums?userId=1', function(user1music){
+          user1albums = user1music;
+        })
+      ).then(function() {
+        // Setting the table titles to the respective user names
+        $(".user1name").html(user1[0].name)
+        $(".user2name").html(user2[0].name)
+
+        // creating rows of albums for user 1
+        var row = '';
+        $.each(user1albums, function (index, album) {
+          // loop through each album for user id 1 and create row followed by cells representing album id and album title
+            row += '<div class="tableRow table-item" id=' + album.id + '><div class="tableCell">' + album.id + '</div>' + '<div class="tableCell">' + album.title + '</div></div>';
+        });
+        // appending the user album rows to the user1 table
+        $('.user1').append(row);
+
+        // creating rows of albums for user 2
+        var row2 = '';
+        $.each(user2albums, function (index, album) {
+          // loop through each album for user id 2 and create row followed by cells representing album id and album title
+            row2 += '<div class="tableRow table-item" id=' + album.id + '><div class="tableCell">' + album.id + '</div>' + '<div class="tableCell">' + album.title + '</div></div>';
+        });
+        // appending the user album rows to the user2 table
+        $('.user2').append(row2);
+      })
+    </script>
+
+    <script>
+    // Script not currently working for drag and drop will continue to work on issues
+
+    // making every row item able to be draggable
+      $(document).ready(function() {
+        $(".table-item").draggable({
+          cursor: 'move',
+          helper: "clone"
+        });
+        // making the user1 table to be droppable
+        $(".user1").droppable({
+          drop: function(event, ui) {
+            var id = $(event.originalEvent.toElement).attr("id");
+            $('.table-item').each(function() {
+              if ($(this).attr("id") === id) {
+                $(this).appendTo(".user1");
+              }
+            });
+          }
+        });
+        // making the user2 table droppable
+        $(".user2").droppable({
+          drop: function(event, ui) {
+            var id = $(event.originalEvent.toElement).attr("id");
+            $('.table-item').each(function() {
+              if ($(this).attr("id") === id) {
+                $(this).appendTo(".user2");
+              }
+            });
+          }
+        });
+      });
+    </script>
+
+
+    <!-- put request to update album user id
+    steps:
+      1) retrieve album id and input into put request url
+      2) In the ajax data proprety, set userId property to the
+      moved userId of table moved to.
+      3) .then to the end of the promise and call on a function that will do a get request for updated
+      user info and update and append rows to user tables.  -->
+
+    <!-- var root = 'http://jsonplaceholder.typicode.com';
+
+    $.ajax( root + '/albums/' + id {
+      method: 'PUT',
+      data: {
+        id: 1,
+        title: 'foo',
+        userId: 1
+      }
+    }).then(function(data) {
+      console.log(data);
+    }); -->
+
+  </body>
+</html>
+
+
+<!-- Various drag and drop example I've found for reference -->
+
+<!--
+$(document).ready(function () {
+var startTable = "user1table";
+var $tabs = $("#" + startTable);
+$(".connectedSortable")
+    .sortable({
+    connectWith: ".connectedSortable",
+    appendTo: $tabs,
+    helper: "clone",
+    cursor: "move",
+    zIndex: 999990,
+    start: function (event, ui) {
+        var start_pos = ui.item.index();
+        ui.item.data('start_pos', start_pos);
+    }
+});
+
+var startTable2 = "user2table";
+var $tabs2 = $("#" + startTable2);
+$(".connectedSortable")
+    .sortable({
+    connectWith: ".connectedSortable",
+    appendTo: $tabs,
+    helper: "clone",
+    cursor: "move",
+    zIndex: 999990,
+    start: function (event, ui) {
+        var start_pos = ui.item.index();
+        ui.item.data('start_pos', start_pos);
+    }
+});
+
+}); -->
+
+
+
+
+
+
+<!-- <script>
+$(document).ready(function(){
+  $('.event').on("dragstart", function (event) {
+    var dt = event.originalEvent.dataTransfer;
+    dt.setData('Text', $(this).attr('id'));
+  });
+  $('table td').on("dragenter dragover drop", function (event) {
+    event.preventDefault();
+    if (event.type === 'drop') {
+      var data = event.originalEvent.dataTransfer.getData('Text',$(this).attr('id'));
+      de=$('#'+data).detach();
+      de.appendTo($(this));
+    };
+  });
+})
+</script> -->
+
+
+
+
+<!-- <script>
+<div id="draggable" class="ui-widget-content">
+  <p>Drag me to my target</p>
+</div>
+
+<div id="droppable" class="ui-widget-header">
+  <p>Drop here</p>
+</div>
+
+<script>
+$( function() {
+  $( "#draggable" ).draggable();
+  $( "#droppable" ).droppable({
+    drop: function( event, ui ) {
+      $( this )
+        .addClass( "ui-state-highlight" )
+        .find( "p" )
+          .html( "Dropped!" );
+    }
+  });
+} );
+</script> -->
+
+
+
+<!-- <script>
+  $(document).ready(function() {
+    var $tabs=$('.user2')
+    $( ".tableBody" )
+        .sortable({
+            connectWith: ".tableBody",
+            items: "> tr:not(:first)",
+            appendTo: $tabs,
+            helper:"clone",
+            zIndex: 999990
+        })
+        .disableSelection()
+    ;
+
+    var $tab_items = $( ".nav-tabs > li", $tabs ).droppable({
+      accept: ".connectedSortable tr",
+      hoverClass: "ui-state-hover",
+
+      drop: function( event, ui ) {
+        return false;
+      }
+    });
+  });
+</script> -->

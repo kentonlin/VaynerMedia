@@ -1,0 +1,43 @@
+.table {
+  display: table;
+  width: 40%;
+}
+.tableRow {
+  display: table-row;
+}
+.user1 {
+  float: left;
+  /*deadline allowed didn't allow me to have enough time to implement flex, settled for float*/
+}
+.user2 {
+  float: right;
+  /*deadline allowed didn't allow me to have enough time to implement flex, settled for float*/
+  /*display: flex;
+  justify-content: space-between;*/
+}
+.tableHeading {
+  display: table-caption;
+  border: 1px solid black;
+  text-align: center;
+  font-weight: bold;
+  padding: 20px 10px;
+}
+.tableCell, .tableHead {
+  display: table-cell;
+  padding: 3px 10px;
+  border: 1px solid #999999;
+  text-align: center;
+}
+/*.tableHeading {
+  display: table-header-group;
+  background-color: blue;
+  font-weight: bold;
+}*/
+/*.tableFoot {
+  display: table-footer-group;
+  font-weight: bold;
+  background-color: blue;
+}*/
+.tableBody {
+  display: table-row-group;
+}
